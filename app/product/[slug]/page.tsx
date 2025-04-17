@@ -1,12 +1,15 @@
 'use client';
 
 import { products } from '@/app/components/data/products';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
+export default function ProductPage() {
   const router = useRouter();
-  const product = products.find((item) => item.slug === params.slug);
+  const params = useParams();
+
+  const slug = params.slug as string; // Force it to string
+  const product = products.find((item) => item.slug === slug);
 
   if (!product) {
     return <div className="p-10">Product not found</div>;
@@ -31,8 +34,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
         <div className="relative w-full h-72 md:h-96 rounded overflow-hidden mb-6">
           <Image
-  src={product.image.desktop.replace('./', '/')}
-  alt={product.name}
+            src={product.image.desktop.replace('./', '/')}
+            alt={product.name}
             fill
             className="object-cover"
           />
