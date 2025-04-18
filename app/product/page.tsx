@@ -26,6 +26,18 @@ export default function ProductPage() {
       }
     });
   };
+  const handleDecreaseFromCart = (name: string) => {
+    setCart((prev) => {
+      return prev
+        .map((item) =>
+          item.name === name
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0); 
+    });
+  };
+  
 
   const handleRemoveFromCart = (name: string) => {
     setCart((prev) => prev.filter((item) => item.name !== name));
@@ -63,30 +75,46 @@ export default function ProductPage() {
               </Link>
               <p className="text-orange-600 font-bold">${product.price.toFixed(2)}</p>
               <div className="flex justify-between items-center">
-                {getQuantity(product.name) > 0 ? (
-                  <button className="bg-orange-100 text-orange-600 px-4 py-1 rounded font-semibold">
-                    {getQuantity(product.name)}
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleAddToCart(product)}
-                    className="bg-orange-600 text-white px-4 py-1 rounded"
-                  >
-                    Add to Cart
-                  </button>
-                )}
-              </div>
+  {getQuantity(product.name) > 0 ? (
+    <div className="flex items-center space-x-2">
+      <button
+        onClick={() => handleAddToCart(product)}
+        className="bg-orange-600 text-white px-2 py-1 rounded font-bold"
+      >
+        +
+      </button>
+      <span className="px-4 py-1 bg-orange-100 text-orange-600 rounded font-semibold">
+        {getQuantity(product.name)}
+      </span>
+      <button
+        onClick={() => handleDecreaseFromCart(product.name)}
+        className="bg-orange-600 text-white px-2 py-1 rounded font-bold"
+      >
+        -
+      </button>
+    </div>
+  ) : (
+    <button
+      onClick={() => handleAddToCart(product)}
+      className="bg-orange-600 text-white px-4 py-1 rounded"
+    >
+      Add to Cart
+    </button>
+  )}
+</div>
+
             </div>
           ))}
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6 h-fit sticky top-4">
+        <div className="bg-white text-gray-600 rounded-lg shadow p-6 h-fit sticky top-4">
           <h2 className="text-lg font-semibold mb-4">Your Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})</h2>
           <div className="space-y-4">
             {cart.length === 0 && <p className="text-gray-400">No items yet</p>}
             {cart.map((item) => (
               <div key={item.name} className="flex justify-between items-center">
                 <div>
+               
                   <p className="font-semibold">{item.name}</p>
                   <p className="text-sm text-gray-600">
                     {item.quantity} × ${item.price.toFixed(2)}
